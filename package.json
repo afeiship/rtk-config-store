@@ -41,5 +41,11 @@
   "dependencies": {
     "@jswork/next-abstract-request": "^1.0.4",
     "@tarojs/taro": "^3.2.1"
-  }
+  },
+  "keywords": [
+    "next",
+    "taro",
+    "request",
+    "http"
+  ]
 }
