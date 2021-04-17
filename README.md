@@ -11,16 +11,15 @@
 npm install -S @jswork/next-taro-request
 ```
 
-## apis
-| api | params | description   |
-|-----|--------|---------------|
-| get | -      | desc balabala |
-
 ## usage
 ```js
 import NxTaroRequest from '@jswork/next-taro-request';
 
-// code goes here:
+const http = NxTaroRequest.getInstance();
+// call api
+http.get('/api/v1/test');
+http.post('/api/v1/test');
+http.put('/api/v1/test');
 ```
 
 ## license
