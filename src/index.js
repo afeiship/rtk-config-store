@@ -5,7 +5,7 @@
   var Taro = require('@tarojs/taro');
   var DEFAULT_OPTIONS = {
     dataType: 'json',
-    responseType: 'json'
+    responseType: 'text'
   };
 
   var NxTaroRequest = nx.declare('nx.TaroRequest', {
