@@ -24,13 +24,13 @@
                 method: inMethod,
                 data: inData,
                 success: function (res) {
-                  resolve({ code: 0, data: res });
+                  resolve({ code: 0, detail: res.data, data: res });
                 },
                 fail: function (res) {
-                  resolve({ code: 1, data: res });
+                  resolve({ code: 1, detail: null, data: res });
                 },
                 complete: function (res) {
-                  resolve({ code: -1, data: res });
+                  resolve({ code: -1, detail: null, data: res });
                 }
               },
               options
