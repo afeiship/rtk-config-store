@@ -27,8 +27,8 @@
       request: function (inMethod, inUrl, inData, inOptions) {
         var self = this;
         var baseOptions = { method: inMethod, url: inUrl, data: inData };
-        var options = nx.mix(baseOptions, this.options, inOptions);
-        options = inOptions.transformRequest(this.interceptor.compose(options, 'request'));
+        var options = nx.mix(null, this.options, baseOptions, inOptions);
+        options = options.transformRequest(this.interceptor.compose(options, 'request'));
         return new Promise(function (resolve, reject) {
           self
             .__request__(options)
