@@ -26,15 +26,15 @@
       },
       request: function (inOptions) {
         var self = this;
-        var options = this.interceptor.compose(inOptions, 'request');
-        options.data = options.transformRequest(options.data);
+        var options = inOptions.transformRequest(this.interceptor.compose(inOptions, 'request'));
         return new Promise(function (resolve, reject) {
           self
             .__request__(options)
             .then(function (res) {
-              var composeRes = self.interceptor.compose(res, 'response');
-              var transformResponse = options.transformResponse(composeRes);
-              resolve(transformResponse);
+              var composeRes = inOptions.transformResponse(
+                self.interceptor.compose(res, 'response')
+              );
+              resolve(composeRes);
             })
             .catch(reject);
         });
