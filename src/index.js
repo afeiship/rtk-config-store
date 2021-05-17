@@ -24,31 +24,27 @@
       defaults: function () {
         return DEFAULT_OPTIONS;
       },
-      request: function (inOptions) {
+      request: function (inMethod, inUrl, inData, inOptions) {
         var self = this;
-        var options = inOptions.transformRequest(this.interceptor.compose(inOptions, 'request'));
+        var baseOptions = { method: inMethod, url: inUrl, data: inData };
+        var options = nx.mix(baseOptions, this.options, inOptions);
+        options = inOptions.transformRequest(this.interceptor.compose(options, 'request'));
         return new Promise(function (resolve, reject) {
           self
             .__request__(options)
             .then(function (res) {
-              var composeRes = inOptions.transformResponse(
-                self.interceptor.compose(res, 'response')
-              );
+              var composeRes = options.transformResponse(self.interceptor.compose(res, 'response'));
               resolve(composeRes);
             })
             .catch(reject);
         });
       },
       __request__: function (inOptions) {
-        var options = nx.mix(null, this.options, inOptions);
         return new Promise(function (resolve, reject) {
           try {
             Taro.request(
               nx.mix(
                 {
-                  url: inUrl,
-                  method: inMethod,
-                  data: inData,
                   success: function (res) {
                     resolve({ code: 0, detail: res.data, data: res });
                   },
@@ -59,7 +55,7 @@
                     resolve({ code: -1, detail: null, data: res });
                   }
                 },
-                options
+                inOptions
               )
             );
           } catch (e) {
