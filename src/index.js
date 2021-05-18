@@ -4,13 +4,15 @@
   var NxAbstractRequest = nx.AbstractRequest || require('@jswork/next-abstract-request');
   var NxInterceptor = nx.Interceptor || require('@jswork/next-interceptor');
   var Taro = require('@tarojs/taro');
+  var TYPES = ['request', 'response', 'error'];
   var DEFAULT_OPTIONS = {
     method: 'get',
     dataType: 'json',
     responseType: 'text',
     interceptors: [],
     transformRequest: nx.stubValue,
-    transformResponse: nx.stubValue
+    transformResponse: nx.stubValue,
+    transformError: nx.stubValue
   };
 
   var NxTaroRequest = nx.declare('nx.TaroRequest', {
@@ -19,7 +21,7 @@
       init: function (inOptions) {
         var parent = this.$base;
         parent.init.call(this, inOptions);
-        this.interceptor = new NxInterceptor({ items: this.options.interceptors });
+        this.interceptor = new NxInterceptor({ items: this.options.interceptors, types: TYPES });
       },
       defaults: function () {
         return DEFAULT_OPTIONS;
@@ -36,7 +38,12 @@
               var composeRes = options.transformResponse(self.interceptor.compose(res, 'response'));
               resolve(composeRes);
             })
-            .catch(reject);
+            .catch(function (error) {
+              var composeError = options.transformResponse(
+                self.interceptor.compose(error, 'error')
+              );
+              reject(composeError);
+            });
         });
       },
       __request__: function (inOptions) {
