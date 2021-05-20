@@ -51,9 +51,7 @@
               resolve(composeRes);
             })
             .catch(function (error) {
-              var composeError = options.transformResponse(
-                self.interceptor.compose(error, 'error')
-              );
+              var composeError = options.transformError(self.interceptor.compose(error, 'error'));
               reject(composeError);
             });
         });
