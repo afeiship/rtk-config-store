@@ -41,17 +41,20 @@
         var options = nx.mix(null, this.options, baseOptions, inOptions);
         var { url, ...config } = options;
         options = options.transformRequest(this.interceptor.compose({ url, config }, 'request'));
+        var requestOptions = { url, ...config };
         return new Promise(function (resolve, reject) {
           self
-            .__request__({ url, ...config })
+            .__request__(requestOptions)
             .then(function (res) {
-              var composeRes = options.transformResponse(
+              var composeRes = requestOptions.transformResponse(
                 self.interceptor.compose({ url, config, data: res }, 'response')
               );
               resolve(composeRes);
             })
             .catch(function (error) {
-              var composeError = options.transformError(self.interceptor.compose(error, 'error'));
+              var composeError = requestOptions.transformError(
+                self.interceptor.compose(error, 'error')
+              );
               reject(composeError);
             });
         });
