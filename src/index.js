@@ -15,7 +15,7 @@
     transformError: nx.stubValue
   };
 
-  var normalizeContentType = function (inOptions) {
+  var normalizeHeaders = function (inOptions) {
     var headers = inOptions.headers;
     headers['content-type'] = headers['Content-Type'];
     delete headers['Content-Type'];
@@ -39,12 +39,15 @@
         var self = this;
         var baseOptions = { method: inMethod, url: inUrl, data: inData };
         var options = nx.mix(null, this.options, baseOptions, inOptions);
-        options = options.transformRequest(this.interceptor.compose(options, 'request'));
+        var { url, ...config } = options;
+        options = options.transformRequest(this.interceptor.compose({ url, config }, 'request'));
         return new Promise(function (resolve, reject) {
           self
             .__request__(options)
             .then(function (res) {
-              var composeRes = options.transformResponse(self.interceptor.compose(res, 'response'));
+              var composeRes = options.transformResponse(
+                self.interceptor.compose({ url, config, data: res }, 'response')
+              );
               resolve(composeRes);
             })
             .catch(function (error) {
@@ -56,25 +59,10 @@
         });
       },
       __request__: function (inOptions) {
-        var options = normalizeContentType(inOptions);
+        var options = normalizeHeaders(inOptions);
         return new Promise(function (resolve, reject) {
           try {
-            Taro.request(
-              nx.mix(
-                {
-                  success: function (res) {
-                    resolve({ code: 0, detail: res.data, data: res });
-                  },
-                  fail: function (res) {
-                    resolve({ code: 1, detail: null, data: res });
-                  },
-                  complete: function (res) {
-                    resolve({ code: -1, detail: null, data: res });
-                  }
-                },
-                options
-              )
-            );
+            Taro.request(nx.mix({ success: resolve, fail: reject }, options));
           } catch (e) {
             reject(e);
           }
