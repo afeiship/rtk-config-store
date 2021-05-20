@@ -15,6 +15,15 @@
     transformError: nx.stubValue
   };
 
+  var fixContentType = function (inOptions) {
+    var headers = inOptions.headers;
+    headers['content-type'] = headers['Content-Type'];
+    delete headers['Content-Type'];
+    delete inOptions.headers;
+    inOptions.header = headers;
+    return inOptions;
+  };
+
   var NxTaroRequest = nx.declare('nx.TaroRequest', {
     extends: NxAbstractRequest,
     methods: {
@@ -47,6 +56,7 @@
         });
       },
       __request__: function (inOptions) {
+        var options = fixContentType(inOptions);
         return new Promise(function (resolve, reject) {
           try {
             Taro.request(
@@ -62,7 +72,7 @@
                     resolve({ code: -1, detail: null, data: res });
                   }
                 },
-                inOptions
+                options
               )
             );
           } catch (e) {
