@@ -2,12 +2,14 @@
   var global = typeof window !== 'undefined' ? window : this || Function('return this')();
   var nx = global.nx || require('@jswork/next');
   var NxAbstractRequest = nx.AbstractRequest || require('@jswork/next-abstract-request');
+  var nxContentType = nx.contentType || require('@jswork/next-content-type');
   var NxInterceptor = nx.Interceptor || require('@jswork/next-interceptor');
   var Taro = require('@tarojs/taro');
   var TYPES = ['request', 'response', 'error'];
   var DEFAULT_OPTIONS = {
     method: 'get',
     dataType: 'json',
+    contentType: 'json',
     responseType: 'text',
     interceptors: [],
     transformRequest: nx.stubValue,
@@ -37,7 +39,8 @@
       },
       request: function (inMethod, inUrl, inData, inOptions) {
         var self = this;
-        var baseOptions = { method: inMethod, url: inUrl, data: inData };
+        var headers = { 'Content-Type': nxContentType(inOptions.contentType) || inOptions.contentType };
+        var baseOptions = { method: inMethod, url: inUrl, headers, data: inData };
         var options = nx.mix(null, this.options, baseOptions, inOptions);
         var { url, ...config } = options;
         options = options.transformRequest(this.interceptor.compose({ url, config }, 'request'));
