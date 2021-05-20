@@ -43,7 +43,7 @@
         options = options.transformRequest(this.interceptor.compose({ url, config }, 'request'));
         return new Promise(function (resolve, reject) {
           self
-            .__request__(options)
+            .__request__({ url, ...config })
             .then(function (res) {
               var composeRes = options.transformResponse(
                 self.interceptor.compose({ url, config, data: res }, 'response')
