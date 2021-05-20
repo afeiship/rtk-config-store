@@ -15,7 +15,7 @@
     transformError: nx.stubValue
   };
 
-  var fixContentType = function (inOptions) {
+  var normalizeContentType = function (inOptions) {
     var headers = inOptions.headers;
     headers['content-type'] = headers['Content-Type'];
     delete headers['Content-Type'];
@@ -56,7 +56,7 @@
         });
       },
       __request__: function (inOptions) {
-        var options = fixContentType(inOptions);
+        var options = normalizeContentType(inOptions);
         return new Promise(function (resolve, reject) {
           try {
             Taro.request(
