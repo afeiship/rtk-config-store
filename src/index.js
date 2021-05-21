@@ -25,9 +25,10 @@
         nx.mix(
           {
             success: function (res) {
+              // todo: 这部分可以放在一个 wx-response-type 的中间件中完成
               var responseType = options.responseType;
               res.data = responseType === 'text' && JSON.parse(res.data);
-              return res;
+              resolve(res);
             },
             fail: reject
           },
