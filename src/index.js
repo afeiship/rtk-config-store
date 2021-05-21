@@ -1,14 +1,16 @@
 (function () {
   var global = typeof window !== 'undefined' ? window : this || Function('return this')();
   var nx = global.nx || require('@jswork/next');
-  var defaults = { responseType: 'json' };
+  var defaults = { responseType: 'text' };
   var Taro = global.Taro || require('@tarojs/taro');
 
   var normalize = function (inOptions) {
     var headers = inOptions.headers;
+    var responseType = inOptions.responseType;
     headers['content-type'] = headers['Content-Type'];
     inOptions.data = inOptions.body;
     inOptions.header = headers;
+    inOptions.responseType = responseType === 'json' ? 'text' : responseType;
     delete headers['Content-Type'];
     delete inOptions.headers;
     delete inOptions.body;
@@ -24,7 +26,7 @@
           {
             success: function (res) {
               var responseType = options.responseType;
-              return responseType === 'json' ? JSON.parse(res) : res;
+              return responseType === 'text' ? JSON.parse(res) : res;
             },
             fail: reject
           },
