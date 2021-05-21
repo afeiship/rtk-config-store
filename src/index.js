@@ -26,7 +26,8 @@
           {
             success: function (res) {
               var responseType = options.responseType;
-              return responseType === 'text' ? JSON.parse(res) : res;
+              res.data = responseType === 'text' && JSON.parse(res.data);
+              return res;
             },
             fail: reject
           },
