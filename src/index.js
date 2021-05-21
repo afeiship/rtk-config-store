@@ -9,6 +9,13 @@
     headers['content-type'] = headers['Content-Type'];
     inOptions.data = inOptions.body;
     inOptions.header = headers;
+    /**
+     * 注意这里特别混淆
+     * 1. 正常的 dataType: 是会决定 content-type + fetch(res.json()) 这两个条件的
+     * 2. 在 wx.request 中，responseType 只能是 text，所以这里不用设置
+     */
+    inOptions.dataType = inOptions.responseType;
+    inOptions.responseType = 'text';
     delete headers['Content-Type'];
     delete inOptions.headers;
     delete inOptions.body;
