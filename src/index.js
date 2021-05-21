@@ -7,11 +7,11 @@
   var normalize = function (inOptions) {
     var headers = inOptions.headers;
     headers['content-type'] = headers['Content-Type'];
-    inOptions.body = inOptions.data;
+    inOptions.data = inOptions.body;
+    inOptions.header = headers;
     delete headers['Content-Type'];
     delete inOptions.headers;
-    delete inOptions.data;
-    inOptions.header = headers;
+    delete inOptions.body;
     return inOptions;
   };
 
