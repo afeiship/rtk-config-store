@@ -1,7 +1,7 @@
 (function () {
   var global = typeof window !== 'undefined' ? window : this || Function('return this')();
   var nx = global.nx || require('@jswork/next');
-  var defaults = { pipeStyle: 'request', responseType: 'text' };
+  var defaults = { responseType: 'text' };
   var Taro = global.Taro || require('@tarojs/taro');
 
   var normalize = function (inOptions) {
