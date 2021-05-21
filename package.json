@@ -46,5 +46,8 @@
     "taro",
     "request",
     "http"
-  ]
+  ],
+  "dependencies": {
+    "@tarojs/taro": "^3.2.8"
+  }
 }
