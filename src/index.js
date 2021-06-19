@@ -25,12 +25,18 @@
         nx.mix(
           {
             success: function (res) {
-              // todo: 这部分可以放在一个 wx-response-type 的中间件中完成
               var responseType = options.responseType;
+              // 网络正常，但服务器异常返回，如返回一段xml/html
+              if (res.statusCode !== 200) return reject(res);
               res.data = responseType === 'text' ? JSON.parse(res.data) : res.data;
               resolve(res);
             },
-            fail: reject
+            // {errMsg: "request:fail "}
+            // 这种怦下说明网络有问题；nginx断了，网络断了等情况
+            fail: function (err) {
+              err.statusCode = -1;
+              reject(err);
+            }
           },
           options
         )
