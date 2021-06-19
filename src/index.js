@@ -3,6 +3,7 @@
   var nx = global.nx || require('@jswork/next');
   var defaults = { responseType: 'text' };
   var Taro = global.Taro || require('@tarojs/taro');
+  var _ = require('@jswork/next-json');
 
   var normalize = function (inOptions) {
     var headers = inOptions.headers;
@@ -27,8 +28,8 @@
             success: function (res) {
               var responseType = options.responseType;
               // 网络正常，但服务器异常返回，如返回一段xml/html
+              res.data = responseType === 'text' ? nx.parse(res.data) : res.data;
               if (res.statusCode !== 200) return reject(res);
-              res.data = responseType === 'text' ? JSON.parse(res.data) : res.data;
               resolve(res);
             },
             // {errMsg: "request:fail "}
