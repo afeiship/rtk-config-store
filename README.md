@@ -12,10 +12,37 @@ npm install @jswork/rtk-config-store
 ```
 
 ## usage
-```js
+> store.ts
+```ts
+import { scanWebpack } from '@jswork/scan-modules';
 import RtkConfigStore from '@jswork/rtk-config-store';
 
-RtkConfigStore({ preloadedState: {}, reducer: {} });
+// when webpack
+const context = require.context('./modules', true, /\.ts$/);
+const stores = scanWebpack(context, { modules: '/modules/' });
+export const store = RtkConfigStore({
+  preloadedState: {},
+  store: stores,
+  reducer: {}
+});
+
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>;
+// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type AppDispatch = typeof store.dispatch;
+```
+
+> app.ts
+```ts
+import { Provider } from 'react-redux';
+import { store } from '@/shared/stores/root';
+
+interface IReduxProviderProps extends React.PropsWithChildren {}
+
+export default function (props: IReduxProviderProps) {
+  const { children } = props;
+  return <Provider store={store}>{children}</Provider>;
+}
 ```
 
 ## types
