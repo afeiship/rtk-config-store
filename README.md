@@ -19,12 +19,8 @@ import RtkConfigStore from '@jswork/rtk-config-store';
 
 // when webpack
 const context = require.context('./modules', true, /\.ts$/);
-const stores = scanWebpack(context, { modules: '/modules/' });
-export const store = RtkConfigStore({
-  preloadedState: {},
-  store: stores,
-  reducer: {}
-});
+const store = scanWebpack(context, { modules: '/modules/' });
+export const store = RtkConfigStore({ store, preloadedState: {}, reducer: {} });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
