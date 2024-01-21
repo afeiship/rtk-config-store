@@ -5,7 +5,8 @@ import reduxWatch from 'redux-watch';
 
 type RtKConfigStoreOptions = {
   store: Record<string, any>;
-} & Parameters<typeof configureStore>[0];
+  reducer?: Record<string, any>;
+} & Omit<Parameters<typeof configureStore>[0], 'reducer'>;
 
 const initRtk = (store) => {
   const { dispatch } = store;
@@ -28,34 +29,33 @@ const initRtk = (store) => {
     return nx.get(rootState, path, defaults);
   });
 
-  nx.$createSlice = (inOptions) => {
-    const { watch, ...restOptions } = inOptions;
-    const watches = watch || {};
-
-    Object.keys(watches).forEach((key) => {
-      const w = reduxWatch(store.getState, key);
-      const watchFn = watches[key];
-      store.subscribe(w((newVal, oldVal, objectPath) => watchFn(newVal, oldVal, objectPath)));
-    });
-
-    return createSlice(restOptions as any);
-  };
+  nx.$createSlice = createSlice;
 };
 
 const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
   const { store, reducer, ...restOptions } = inOptions;
   const reducers: Record<string, any> = {};
+  const watches: Record<string, any> = {};
 
   Object.keys(store).forEach((key) => {
     const value = store[key];
+    const watchKey = `${value.name}@watch`;
     reducers[value.name] = value.reducer;
+    watches[watchKey] = value.watch || {};
   });
 
   const computedReducers = { ...reducers, ...reducer };
-
   const rootStore = configureStore({ reducer: computedReducers, ...restOptions });
 
   initRtk(rootStore);
+
+  // subscribe watch:
+  nx.forIn(watches, (key, watchObj) => {
+    nx.forIn(watchObj, (path, handler) => {
+      const w = watch(rootStore.getState, path);
+      store.subscribe(w(handler));
+    });
+  });
 
   return rootStore;
 };
