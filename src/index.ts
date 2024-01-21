@@ -39,9 +39,8 @@ const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
 
   Object.keys(store).forEach((key) => {
     const value = store[key];
-    const watchKey = `${value.name}@watch`;
     reducers[value.name] = value.reducer;
-    watches[watchKey] = value.watch || {};
+    watches[value.name] = value.watch || {};
   });
 
   const computedReducers = { ...reducers, ...reducer };
@@ -50,9 +49,9 @@ const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
   initRtk(rootStore);
 
   // subscribe watch:
-  nx.forIn(watches, (key, watchObj) => {
+  nx.forIn(watches, (name, watchObj) => {
     nx.forIn(watchObj, (path, handler) => {
-      const w = watch(rootStore.getState, path);
+      const w = reduxWatch(rootStore.getState, `${name}.${path}`);
       store.subscribe(w(handler));
     });
   });
