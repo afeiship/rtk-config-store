@@ -1,7 +1,7 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 import nx from '@jswork/next';
 import { useSelector } from 'react-redux';
-import watch from 'redux-watch';
+import reduxWatch from 'redux-watch';
 
 type RtKConfigStoreOptions = {
   store: Record<string, any>;
@@ -34,12 +34,12 @@ const initRtk = (store) => {
     const watches = watch || {};
 
     Object.keys(watches).forEach((key) => {
-      const w = watch(store.getState, key);
+      const w = reduxWatch(store.getState, key);
       const watchFn = watches[key];
       store.subscribe(w((newVal, oldVal, objectPath) => watchFn(newVal, oldVal, objectPath)));
     });
 
-    return createSlice(restOptions);
+    return createSlice(restOptions as any);
   };
 };
 
