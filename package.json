@@ -28,7 +28,9 @@
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
-  "dependencies": {},
+  "dependencies": {
+    "redux-watch": "^1.2.0"
+  },
   "keywords": [
     "next",
     "taro",

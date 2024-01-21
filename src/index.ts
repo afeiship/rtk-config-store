@@ -1,11 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, createSlice } from '@reduxjs/toolkit';
 import nx from '@jswork/next';
 import { useSelector } from 'react-redux';
+import watch from 'redux-watch';
 
 type RtKConfigStoreOptions = {
   store: Record<string, any>;
 } & Parameters<typeof configureStore>[0];
-
 
 const initRtk = (store) => {
   const { dispatch } = store;
@@ -28,6 +28,19 @@ const initRtk = (store) => {
     const rootState = store.getState();
     return nx.get(rootState, path, defaults);
   });
+
+  nx.$createSlice = (inOptions) => {
+    const { watch, ...restOptions } = inOptions;
+    const watches = watch || {};
+
+    Object.keys(watches).forEach((key) => {
+      const w = watch(store.getState, key);
+      const watchFn = watches[key];
+      store.subscribe(w((newVal, oldVal, objectPath) => watchFn(newVal, oldVal, objectPath)));
+    });
+
+    return createSlice(restOptions);
+  };
 };
 
 const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
@@ -41,7 +54,7 @@ const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
 
   const computedReducers = { ...reducers, ...reducer };
 
-  const rootStore = configureStore({ reducer: computedReducers, ...restOptions, });
+  const rootStore = configureStore({ reducer: computedReducers, ...restOptions });
 
   initRtk(rootStore);
 
