@@ -6,7 +6,7 @@ export default defineConfig({
   splitting: true,
   cjsInterop: true,
   // globalName: 'i18nHelper',
-  external: ['@reduxjs/toolkit', '@jswork/next', 'redux-watch', 'react-redux'],
+  external: ['@reduxjs/toolkit', '@jswork/next', 'redux-watch', 'react-redux', 'fast-deep-equal'],
   clean: true,
   // dts: true,
   sourcemap: true,
