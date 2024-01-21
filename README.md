@@ -41,7 +41,7 @@ export default function (props: IReduxProviderProps) {
 }
 ```
 
-> define a store
+> define a slice use `nx.$createSlice`
 ```ts
 export default nx.$createSlice({
   name: 'user',
