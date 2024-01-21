@@ -2,6 +2,7 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
 import nx from '@jswork/next';
 import { useSelector } from 'react-redux';
 import reduxWatch from 'redux-watch';
+import fde from 'fast-deep-equal';
 
 nx.$createSlice = (inOptions: any) => {
   const { name, watch, ...restOptions } = inOptions;
@@ -63,7 +64,7 @@ const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
   // subscribe watch:
   nx.forIn(watches, (name, watchObj) => {
     nx.forIn(watchObj, (path, handler) => {
-      const w = reduxWatch(rootStore.getState, `${name}.${path}`);
+      const w = reduxWatch(rootStore.getState, `${name}.${path}`, fde);
       rootStore.subscribe(w(handler));
     });
   });
