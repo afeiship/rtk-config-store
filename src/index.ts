@@ -64,9 +64,7 @@ const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
   nx.forIn(watches, (name, watchObj) => {
     nx.forIn(watchObj, (path, handler) => {
       const w = reduxWatch(rootStore.getState, `${name}.${path}`);
-      rootStore.subscribe(
-        w((oldValue, newValue, objectPath) => handler(newValue, oldValue, objectPath))
-      );
+      rootStore.subscribe(w(handler));
     });
   });
 
