@@ -46,9 +46,10 @@ const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
 
   Object.keys(store).forEach((key) => {
     const value = store[key];
-    reducers[value.name] = value.reducer;
+    const name = value.name;
+    reducers[name] = value.reducer;
     // @ts-ignore
-    watches[value.name] = value.__watch__ || {};
+    watches[name] = value.__watch__ || {};
     // @ts-ignore
     delete value.__watch__;
   });
