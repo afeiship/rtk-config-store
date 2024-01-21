@@ -20,7 +20,6 @@ const initRtk = (store) => {
   });
 
   nx.set(nx, '$use', (path: any, defaults?) => {
-    if (typeof path === 'function') return useSelector(path, defaults);
     return useSelector((state) => nx.get(state, path, defaults));
   });
 
