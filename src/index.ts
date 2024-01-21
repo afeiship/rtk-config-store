@@ -6,10 +6,7 @@ import fde from 'fast-deep-equal';
 
 nx.$createSlice = (inOptions: any) => {
   const { name, watch, ...restOptions } = inOptions;
-  const slice = createSlice({
-    name,
-    ...restOptions,
-  });
+  const slice = createSlice({ name, ...restOptions });
   // @ts-ignore
   slice.__watch__ = watch;
   return slice;
