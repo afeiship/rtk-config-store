@@ -3,6 +3,8 @@ import nx from '@jswork/next';
 import { useSelector } from 'react-redux';
 import reduxWatch from 'redux-watch';
 
+nx.$createSlice = createSlice;
+
 type RtKConfigStoreOptions = {
   store: Record<string, any>;
   reducer?: Record<string, any>;
@@ -28,8 +30,6 @@ const initRtk = (store) => {
     const rootState = store.getState();
     return nx.get(rootState, path, defaults);
   });
-
-  nx.$createSlice = createSlice;
 };
 
 const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
