@@ -3,7 +3,16 @@ import nx from '@jswork/next';
 import { useSelector } from 'react-redux';
 import reduxWatch from 'redux-watch';
 
-nx.$createSlice = createSlice;
+nx.$createSlice = (inOptions: any) => {
+  const { name, watch, ...restOptions } = inOptions;
+  const slice = createSlice({
+    name,
+    ...restOptions,
+  });
+  // @ts-ignore
+  slice.__watch__ = watch;
+  return slice;
+};
 
 type RtKConfigStoreOptions = {
   store: Record<string, any>;
@@ -40,7 +49,10 @@ const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
   Object.keys(store).forEach((key) => {
     const value = store[key];
     reducers[value.name] = value.reducer;
-    watches[value.name] = value.watch || {};
+    // @ts-ignore
+    watches[value.name] = value.__watch__ || {};
+    // @ts-ignore
+    delete value.__watch__;
   });
 
   const computedReducers = { ...reducers, ...reducer };
@@ -52,7 +64,9 @@ const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
   nx.forIn(watches, (name, watchObj) => {
     nx.forIn(watchObj, (path, handler) => {
       const w = reduxWatch(rootStore.getState, `${name}.${path}`);
-      store.subscribe(w(handler));
+      rootStore.subscribe(
+        w((oldValue, newValue, objectPath) => handler(newValue, oldValue, objectPath))
+      );
     });
   });
 
