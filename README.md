@@ -41,6 +41,30 @@ export default function (props: IReduxProviderProps) {
 }
 ```
 
+> define a store
+```ts
+export default nx.$createSlice({
+  name: 'user',
+  initialState: {
+    token: null,
+    profile: JSON.parse(localStorage.getItem('profile'))
+  },
+  reducers: {
+    setToken: (state, action) => {
+      state.token = action.payload;
+    },
+    setProfile: (state, action) => {
+      state.profile = action.payload;
+    }
+  },
+  watch: {
+    profile: (newValue, oldValue, objectPath) => {
+      console.log('profile:', newVal, oldVal, objectPath);
+    }
+  }
+});
+```
+
 ## types
 ```ts
 /// <reference types="@jswork/rtk-config-store/global.d.ts" />
