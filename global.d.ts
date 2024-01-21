@@ -14,5 +14,5 @@ interface NxStatic {
   $use: (path: any, defaults?) => any;
   $get: (path: string, defaults?) => any;
   store: import('@reduxjs/toolkit/dist/configureStore').ToolkitStore;
-  $createSlice: (inOptions: any) => any;
+  $createSlice: (options: any) => import('@reduxjs/toolkit').Slice<any, any>;
 }
