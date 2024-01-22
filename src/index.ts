@@ -36,9 +36,10 @@ const initRtk = (store) => {
     return dispatch({ type, payload });
   });
 
-  nx.set(nx, '$get', (path: string, defaults?) => {
-    const computed = getComputed(nx.$slice, path);
+  nx.set(nx, '$get', (path?: string, defaults?) => {
     const state = store.getState();
+    if (!path) return state;
+    const computed = getComputed(nx.$slice, path);
     return typeof computed === 'function' ? computed(state) : nx.get(state, path, defaults);
   });
 
