@@ -21,7 +21,7 @@ type RtKConfigStoreOptions = {
 const initRtk = (store) => {
   const { dispatch } = store;
 
-  nx.set(nx, 'store', store);
+  nx.set(nx, '$store', store);
 
   nx.set(nx, '$patch', (...args) => {
     if (!args.length) return;
