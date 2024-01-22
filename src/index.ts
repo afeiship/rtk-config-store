@@ -32,12 +32,15 @@ const initRtk = (store) => {
 
   nx.set(nx, '$get', (path: string, defaults?) => {
     const state = store.getState();
-    return nx.get(state, path, nx.get(nx.$slice, path, defaults));
+    return nx.get(state, path, defaults);
   });
 
   nx.set(nx, '$use', (path: any, defaults?) => {
-    const strSelector = (state) => nx.get(state, path, nx.get(nx.$slice, path, defaults))
-    const selector = typeof path === 'function' ? path : strSelector;
+    const computed = nx.get(nx.$slice, path);
+    const strSelector = (state) => nx.get(state, path, defaults)
+    const selector = typeof path === 'function' ? path : (
+      typeof computed === 'function' ? computed : strSelector
+    );
     return useSelector(selector);
   });
 };
