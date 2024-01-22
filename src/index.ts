@@ -31,7 +31,8 @@ const initRtk = (store) => {
   });
 
   nx.set(nx, '$use', (path: any, defaults?) => {
-    const selector = typeof path === 'function' ? path : (state) => nx.get(state, path, defaults);
+    const strSelector = (state) => nx.get(state, path, nx.get(nx.$slice, path, defaults))
+    const selector = typeof path === 'function' ? path : strSelector;
     return useSelector(selector);
   });
 
@@ -45,6 +46,8 @@ const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
   const { store, reducer, ...restOptions } = inOptions;
   const reducers: Record<string, any> = {};
   const watches: Record<string, any> = {};
+
+  nx.$slice = store;
 
   Object.keys(store).forEach((key) => {
     const value = store[key];

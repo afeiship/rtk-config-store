@@ -13,6 +13,7 @@ interface NxStatic {
   $patch: ActionFunction;
   $use: (path: any, defaults?) => any;
   $get: (path: string, defaults?) => any;
-  store: import('@reduxjs/toolkit/dist/configureStore').ToolkitStore;
+  $store: import('@reduxjs/toolkit/dist/configureStore').ToolkitStore;
+  $slice: Record<string, any>;
   $createSlice: (options: any) => import('@reduxjs/toolkit').Slice<any, any>;
 }
