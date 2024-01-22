@@ -5,10 +5,10 @@ import { useSelector } from 'react-redux';
 import reduxWatch from 'redux-watch';
 import fde from 'fast-deep-equal';
 
-const getComputed = (inSlice: Slice, inPath: string) => {
+const getComputed = (inModules: Record<string, any>, inPath: string) => {
   const paths = inPath.split('.');
   paths.splice(1, 0, 'selectors');
-  return nx.get(inSlice, paths.join('.'));
+  return nx.get(inModules, paths.join('.'));
 };
 
 nx.$createSlice = (inOptions: any) => {
