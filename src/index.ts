@@ -1,4 +1,5 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
+import type { Slice } from '@reduxjs/toolkit';
 import nx from '@jswork/next';
 import { useSelector } from 'react-redux';
 import reduxWatch from 'redux-watch';
@@ -6,10 +7,10 @@ import fde from 'fast-deep-equal';
 
 nx.$createSlice = (inOptions: any) => {
   const { name, watch, ...restOptions } = inOptions;
-  const slice = createSlice({ name, ...restOptions });
-  // @ts-ignore
+  const slice = createSlice({ name, ...restOptions }) as any;
   slice.__watch__ = watch;
-  return slice;
+  slice.__getters__ = watch;
+  return slice as Slice
 };
 
 type RtKConfigStoreOptions = {
@@ -30,7 +31,8 @@ const initRtk = (store) => {
   });
 
   nx.set(nx, '$use', (path: any, defaults?) => {
-    return useSelector((state) => nx.get(state, path, defaults));
+    const selector = typeof path === 'function' ? path : (state) => nx.get(state, path, defaults);
+    return useSelector(selector);
   });
 
   nx.set(nx, '$get', (path: string, defaults?) => {
