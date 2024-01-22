@@ -89,7 +89,7 @@ const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
     reducer: computedReducers,
     middleware(getDefaultMiddleware) {
       const middlwales = [listenerMiddleware.middleware, middleware as any].filter(Boolean);
-      return getDefaultMiddleware().concat(middlwales);
+      return getDefaultMiddleware().concat(...middlwales);
     },
     ...restOptions
   });
