@@ -7,7 +7,7 @@ import fde from 'fast-deep-equal';
 
 const listeners = {};
 const listenerMiddleware = createListenerMiddleware();
-const isFunction = (inValue) => typeof inValue === 'function';
+const isFunction = (inValue: any) => typeof inValue === 'function';
 const getComputed = (inModules: Record<string, any>, inPath: string) => {
   const paths = inPath.split('.');
   paths.splice(1, 0, 'selectors');
