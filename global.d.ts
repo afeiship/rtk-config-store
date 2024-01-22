@@ -10,6 +10,7 @@ type ActionFunction = {
 };
 
 interface NxStatic {
+  $event: any;
   $patch: ActionFunction;
   $use: (path: any, defaults?) => any;
   $get: (path: string, defaults?) => any;

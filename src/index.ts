@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import reduxWatch from 'redux-watch';
 import fde from 'fast-deep-equal';
 
-const listeners = {};
 const listenerMiddleware = createListenerMiddleware();
 const isFunction = (inValue: any) => typeof inValue === 'function';
 const getComputed = (inModules: Record<string, any>, inPath: string) => {
@@ -14,15 +13,17 @@ const getComputed = (inModules: Record<string, any>, inPath: string) => {
   return nx.get(inModules, paths.join('.'));
 };
 
-
 // start listening:
 listenerMiddleware.startListening({
   matcher: nx.stubTrue as any,
-  effect: (action, listenerApi) => {
-    // todo
+  effect: (action) => {
+    if (nx.$event) {
+      const { type, payload } = action as any;
+      nx.$event.emit('rtk.*', action);
+      nx.$event.emit(`rtk.${type}`, payload);
+    }
   }
 });
-
 
 nx.$createSlice = (inOptions: any) => {
   const { name, watch, ...restOptions } = inOptions;
