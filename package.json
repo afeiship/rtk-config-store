@@ -1,6 +1,6 @@
 {
   "name": "@jswork/rtk-config-store",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "Redux toolkit config store with next.",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
