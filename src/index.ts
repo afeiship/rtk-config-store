@@ -31,8 +31,9 @@ const initRtk = (store) => {
   });
 
   nx.set(nx, '$get', (path: string, defaults?) => {
+    const computed = nx.get(nx.$slice, path);
     const state = store.getState();
-    return nx.get(state, path, defaults);
+    return typeof computed === 'function' ? computed(state) : nx.get(state, path, defaults);
   });
 
   nx.set(nx, '$use', (path: any, defaults?) => {
