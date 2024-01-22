@@ -11,6 +11,8 @@ const getComputed = (inModules: Record<string, any>, inPath: string) => {
   return nx.get(inModules, paths.join('.'));
 };
 
+const isFunction = (inValue) => typeof inValue === 'function';
+
 nx.$createSlice = (inOptions: any) => {
   const { name, watch, ...restOptions } = inOptions;
   const slice = createSlice({ name, ...restOptions }) as any;
@@ -40,14 +42,14 @@ const initRtk = (store) => {
     const state = store.getState();
     if (!path) return state;
     const computed = getComputed(nx.$slice, path);
-    return typeof computed === 'function' ? computed(state) : nx.get(state, path, defaults);
+    return isFunction(computed) ? computed(state) : nx.get(state, path, defaults);
   });
 
   nx.set(nx, '$use', (path: any, defaults?) => {
     const computed = getComputed(nx.$slice, path);
     const strSelector = (state) => nx.get(state, path, defaults)
-    const selector = typeof path === 'function' ? path : (
-      typeof computed === 'function' ? computed : strSelector
+    const selector = isFunction(path) ? path : (
+      isFunction(computed) ? computed : strSelector
     );
     return useSelector(selector);
   });
