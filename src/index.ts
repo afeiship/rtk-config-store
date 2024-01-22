@@ -5,6 +5,12 @@ import { useSelector } from 'react-redux';
 import reduxWatch from 'redux-watch';
 import fde from 'fast-deep-equal';
 
+const getComputed = (inSlice: Slice, inPath: string) => {
+  const paths = inPath.split('.');
+  paths.splice(1, 0, 'selectors');
+  return nx.get(inSlice, paths.join('.'));
+};
+
 nx.$createSlice = (inOptions: any) => {
   const { name, watch, ...restOptions } = inOptions;
   const slice = createSlice({ name, ...restOptions }) as any;
@@ -31,13 +37,13 @@ const initRtk = (store) => {
   });
 
   nx.set(nx, '$get', (path: string, defaults?) => {
-    const computed = nx.get(nx.$slice, path);
+    const computed = getComputed(nx.$slice, path);
     const state = store.getState();
     return typeof computed === 'function' ? computed(state) : nx.get(state, path, defaults);
   });
 
   nx.set(nx, '$use', (path: any, defaults?) => {
-    const computed = nx.get(nx.$slice, path);
+    const computed = getComputed(nx.$slice, path);
     const strSelector = (state) => nx.get(state, path, defaults)
     const selector = typeof path === 'function' ? path : (
       typeof computed === 'function' ? computed : strSelector
