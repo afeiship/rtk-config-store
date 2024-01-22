@@ -16,13 +16,13 @@ const getComputed = (inModules: Record<string, any>, inPath: string) => {
 // start listening:
 listenerMiddleware.startListening({
   matcher: nx.stubTrue as any,
-  effect: (action) => {
+  effect: (action, listenerApi) => {
     if (nx.$event) {
-      const { type, payload } = action as any;
-      nx.$event.emit('rtk.*', action);
-      nx.$event.emit(`rtk.${type}`, payload);
+      const { type } = action as any;
+      nx.$event.emit('rtk.*', action, listenerApi);
+      nx.$event.emit(`rtk.${type}`, action, listenerApi);
     }
-  }
+  },
 });
 
 nx.$createSlice = (inOptions: any) => {
@@ -30,7 +30,7 @@ nx.$createSlice = (inOptions: any) => {
   const slice = createSlice({ name, ...restOptions }) as any;
   slice.__watch__ = watch;
   slice.__getters__ = watch;
-  return slice as Slice
+  return slice as Slice;
 };
 
 type RtKConfigStoreOptions = {
@@ -59,10 +59,8 @@ const initRtk = (store) => {
 
   nx.set(nx, '$use', (path: any, defaults?) => {
     const computed = getComputed(nx.$slice, path);
-    const strSelector = (state) => nx.get(state, path, defaults)
-    const selector = isFunction(path) ? path : (
-      isFunction(computed) ? computed : strSelector
-    );
+    const strSelector = (state) => nx.get(state, path, defaults);
+    const selector = isFunction(path) ? path : isFunction(computed) ? computed : strSelector;
     return useSelector(selector);
   });
 };
@@ -92,9 +90,9 @@ const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
         const calcMiddleware = middleware(getDefaultMiddleware as any);
         return getDefaultMiddleware().concat(listenerMiddleware.middleware, calcMiddleware);
       }
-      return getDefaultMiddleware().concat(listenerMiddleware.middleware)
+      return getDefaultMiddleware().concat(listenerMiddleware.middleware);
     },
-    ...restOptions
+    ...restOptions,
   });
 
   initRtk(rootStore);
