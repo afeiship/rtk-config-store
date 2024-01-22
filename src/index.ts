@@ -1,17 +1,19 @@
-import { configureStore, createSlice } from '@reduxjs/toolkit';
+import { configureStore, createSlice, createListenerMiddleware } from '@reduxjs/toolkit';
 import type { Slice } from '@reduxjs/toolkit';
 import nx from '@jswork/next';
 import { useSelector } from 'react-redux';
 import reduxWatch from 'redux-watch';
 import fde from 'fast-deep-equal';
 
+const listenerMiddleware = createListenerMiddleware();
+const isFunction = (inValue) => typeof inValue === 'function';
 const getComputed = (inModules: Record<string, any>, inPath: string) => {
   const paths = inPath.split('.');
   paths.splice(1, 0, 'selectors');
   return nx.get(inModules, paths.join('.'));
 };
 
-const isFunction = (inValue) => typeof inValue === 'function';
+
 
 nx.$createSlice = (inOptions: any) => {
   const { name, watch, ...restOptions } = inOptions;
@@ -56,7 +58,7 @@ const initRtk = (store) => {
 };
 
 const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
-  const { store, reducer, ...restOptions } = inOptions;
+  const { store, reducer, middleware, ...restOptions } = inOptions;
   const reducers: Record<string, any> = {};
   const watches: Record<string, any> = {};
 
@@ -73,7 +75,14 @@ const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
   });
 
   const computedReducers = { ...reducers, ...reducer };
-  const rootStore = configureStore({ reducer: computedReducers, ...restOptions });
+  const rootStore = configureStore({
+    reducer: computedReducers,
+    middleware(getDefaultMiddleware) {
+      const middlwales = [listenerMiddleware.middleware, middleware as any].filter(Boolean);
+      return getDefaultMiddleware().concat(middlwales);
+    },
+    ...restOptions
+  });
 
   initRtk(rootStore);
 
