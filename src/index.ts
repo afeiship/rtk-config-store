@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import reduxWatch from 'redux-watch';
 import fde from 'fast-deep-equal';
 
+const listeners = {};
 const listenerMiddleware = createListenerMiddleware();
 const isFunction = (inValue) => typeof inValue === 'function';
 const getComputed = (inModules: Record<string, any>, inPath: string) => {
@@ -13,6 +14,14 @@ const getComputed = (inModules: Record<string, any>, inPath: string) => {
   return nx.get(inModules, paths.join('.'));
 };
 
+
+// start listening:
+listenerMiddleware.startListening({
+  matcher: nx.stubTrue as any,
+  effect: (action, listenerApi) => {
+    // todo
+  }
+});
 
 
 nx.$createSlice = (inOptions: any) => {
