@@ -30,15 +30,15 @@ const initRtk = (store) => {
     return dispatch({ type, payload });
   });
 
+  nx.set(nx, '$get', (path: string, defaults?) => {
+    const state = store.getState();
+    return nx.get(state, path, nx.get(nx.$slice, path, defaults));
+  });
+
   nx.set(nx, '$use', (path: any, defaults?) => {
     const strSelector = (state) => nx.get(state, path, nx.get(nx.$slice, path, defaults))
     const selector = typeof path === 'function' ? path : strSelector;
     return useSelector(selector);
-  });
-
-  nx.set(nx, '$get', (path: string, defaults?) => {
-    const rootState = store.getState();
-    return nx.get(rootState, path, defaults);
   });
 };
 
