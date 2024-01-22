@@ -17,10 +17,11 @@ const getComputed = (inModules: Record<string, any>, inPath: string) => {
 listenerMiddleware.startListening({
   matcher: nx.stubTrue as any,
   effect: (action, listenerApi) => {
+    const args = [action, listenerApi];
     if (nx.$event) {
       const { type } = action as any;
-      nx.$event.emit('rtk.*', action, listenerApi);
-      nx.$event.emit(`rtk.${type}`, action, listenerApi);
+      nx.$event.emit('rtk.*', args);
+      nx.$event.emit(`rtk.${type}`, args);
     }
   },
 });
