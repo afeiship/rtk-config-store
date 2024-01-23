@@ -35,7 +35,7 @@ nx.$createSlice = (inOptions: any) => {
 };
 
 type RtKConfigStoreOptions = {
-  store: Record<string, any>;
+  modules: Record<string, any>;
   reducer?: Record<string, any>;
 } & Omit<Parameters<typeof configureStore>[0], 'reducer'>;
 
@@ -67,14 +67,14 @@ const initRtk = (store) => {
 };
 
 const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
-  const { store, reducer, middleware, ...restOptions } = inOptions;
+  const { modules, reducer, middleware, ...restOptions } = inOptions;
   const reducers: Record<string, any> = {};
   const watches: Record<string, any> = {};
 
-  nx.$slice = store;
+  nx.$slice = modules;
 
-  Object.keys(store).forEach((key) => {
-    const value = store[key];
+  Object.keys(modules).forEach((key) => {
+    const value = modules[key];
     const name = value.name;
     reducers[name] = value.reducer;
     // @ts-ignore
