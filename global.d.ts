@@ -12,7 +12,9 @@ type ActionFunction = {
 interface NxStatic {
   $event: any;
   $patch: ActionFunction;
+  $use: (path?: string) => any;
   $use: (path: any, defaults?) => any;
+  $get: (path?: string) => any;
   $get: (path: string, defaults?) => any;
   $store: import('@reduxjs/toolkit/dist/configureStore').ToolkitStore;
   $slice: Record<string, any>;
