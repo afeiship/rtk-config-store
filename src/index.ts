@@ -1,4 +1,4 @@
-import { configureStore, createSlice, createListenerMiddleware } from '@reduxjs/toolkit';
+import { configureStore, createSlice, createListenerMiddleware, combineReducers } from '@reduxjs/toolkit';
 import type { Slice } from '@reduxjs/toolkit';
 import nx from '@jswork/next';
 import { useSelector } from 'react-redux';
@@ -37,6 +37,7 @@ nx.$createSlice = (inOptions: any) => {
 type RtKConfigStoreOptions = {
   modules: Record<string, any>;
   reducer?: Record<string, any>;
+  transformReducer?: (inReducer: Record<string, any>) => Record<string, any>;
 } & Omit<Parameters<typeof configureStore>[0], 'reducer'>;
 
 const initRtk = (store) => {
@@ -67,7 +68,7 @@ const initRtk = (store) => {
 };
 
 const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
-  const { modules, reducer, middleware, ...restOptions } = inOptions;
+  const { modules, reducer, middleware, transformReducer, ...restOptions } = inOptions;
   const reducers: Record<string, any> = {};
   const watches: Record<string, any> = {};
 
@@ -83,9 +84,9 @@ const RtkConfigStore = (inOptions: RtKConfigStoreOptions) => {
     delete value.__watch__;
   });
 
-  const computedReducers = { ...reducers, ...reducer };
+  const rootReducer = combineReducers({ ...reducers, ...reducer }) as any;
   const rootStore = configureStore({
-    reducer: computedReducers,
+    reducer: transformReducer ? transformReducer(rootReducer) : rootReducer,
     middleware(getDefaultMiddleware: any) {
       if (middleware) {
         const calcMiddleware = middleware(getDefaultMiddleware as any);
