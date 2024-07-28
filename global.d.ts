@@ -1,4 +1,3 @@
-type Payload = Record<string, any>;
 type ActionObject = {
   type: string;
   payload?: any;
@@ -12,10 +11,8 @@ type ActionFunction = {
 interface NxStatic {
   $event: any;
   $patch: ActionFunction;
-  $use: (path?: string) => any;
-  $use: (path: any, defaults?) => any;
-  $get: (path?: string) => any;
-  $get: (path: string, defaults?) => any;
+  $use: (path?: any, defaults?) => any;
+  $get: (path?: string, defaults?) => any;
   $store: import('@reduxjs/toolkit/dist/configureStore').ToolkitStore;
   $slice: Record<string, any>;
   $createSlice: (options: any) => import('@reduxjs/toolkit').Slice<any, any>;
